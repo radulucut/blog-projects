@@ -24,11 +24,7 @@ class ImageZoom {
     this.hHeight = Math.floor(this.canvas.height / 2);
 
     this.onReset();
-
-    this.rectData = [
-      new ImageData(this.getLine((this.hWidth + 2) * 4), this.hWidth + 2, 1),
-      new ImageData(this.getLine(this.hHeight * 4), 1, this.hHeight)
-    ];
+    this.initStrokeRect();
   }
 
   onZoom() {
@@ -65,6 +61,11 @@ class ImageZoom {
     this.strokeRect(this.dx - 1, this.dy - 1, this.hWidth + 2, this.hHeight)
   }
 
+  cleanStroke() {
+    for (let line of this.strokeData)
+      this.ctx.putImageData(line.data, line.x, line.y);
+  }
+
   saveStrokeData(x, y, width, height) {
     this.strokeData = [
       {
@@ -90,16 +91,18 @@ class ImageZoom {
     ];
   }
 
-  cleanStroke() {
-    for (let line of this.strokeData)
-      this.ctx.putImageData(line.data, line.x, line.y);
-  }
-
   strokeRect(x, y, width, height) {
     this.ctx.putImageData(this.rectData[0], x, y);
     this.ctx.putImageData(this.rectData[1], x + width - 1, y + 1);
     this.ctx.putImageData(this.rectData[0], x, y + height + 1);
     this.ctx.putImageData(this.rectData[1], x, y + 1);
+  }
+
+  initStrokeRect() {
+    this.rectData = [
+      new ImageData(this.getLine((this.hWidth + 2) * 4), this.hWidth + 2, 1),
+      new ImageData(this.getLine(this.hHeight * 4), 1, this.hHeight)
+    ];
   }
 
   getLine(size) {
